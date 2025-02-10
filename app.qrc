@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>layers.svg</file>
+        <file>bookmark.svg</file>
+    </qresource>
+</RCC>

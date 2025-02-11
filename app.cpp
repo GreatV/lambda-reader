@@ -5,6 +5,9 @@
 #include <QLabel>
 #include <QToolBar>
 #include <QComboBox>
+#include <QSettings>
+#include <QDir>
+#include <QFileInfo>
 
 app::app(QWidget* parent)
 	: QMainWindow(parent),
@@ -73,14 +76,20 @@ void app::create_menus()
 
 void app::open_file()
 {
+	QSettings settings("Lambda Reader", "PDF Reader");
+	const QString last_dir = settings.value("lastOpenDir", QDir::homePath()).toString();
+
 	const QString file_name = QFileDialog::getOpenFileName(
-		this, tr("Open PDF File"), QString(),
+		this, tr("Open PDF File"), last_dir,
 		tr("PDF Files (*.pdf);;All Files (*)"));
 
 	if (file_name.isEmpty())
 	{
 		return;
 	}
+
+	// Save the directory path for next time
+	settings.setValue("lastOpenDir", QFileInfo(file_name).absolutePath());
 
 	if (current_document_)
 	{

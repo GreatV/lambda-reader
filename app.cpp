@@ -137,14 +137,14 @@ void app::open_file()
 			for (int i = 0; i < row_count; ++i)
 			{
 				QModelIndex idx = bookmark_model_->index(i, 0, parent);
-				const int page = bookmark_model_->data(idx, Qt::UserRole + 1).toInt();
-				QString title = bookmark_model_->data(idx, Qt::DisplayRole).toString();
+				const int page = bookmark_model_->data(idx, static_cast<int>(QPdfBookmarkModel::Role::Page)).toInt();
+				QString title = bookmark_model_->data(idx, static_cast<int>(QPdfBookmarkModel::Role::Title)).toString();
 
-				bookmark bookmark{page - 1, title}; // Convert to 0-based page number
+				bookmark bookmark{page, title};
 				bookmarks_.append(bookmark);
 
 				auto* list_item = new QListWidgetItem(title);
-				list_item->setData(Qt::UserRole, page - 1);
+				list_item->setData(Qt::UserRole, page);
 				bookmark_list_->addItem(list_item);
 
 				// Recursively load child bookmarks
@@ -327,7 +327,7 @@ void app::bookmark_selected(const QListWidgetItem* item) const
 	}
 
 	const int page = item->data(Qt::UserRole).toInt();
-	pdf_view_->pageNavigator()->jump(page, QPointF(0.5, 0.5), 0);
+	pdf_view_->pageNavigator()->jump(page, QPointF(0.5, 0.5), 0); // Convert to 0-based for jump
 }
 
 void app::setup_floating_toolbar()
